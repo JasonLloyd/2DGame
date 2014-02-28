@@ -2,15 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/core.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/jbox2d-library-2.1.2.2-jar-with-dependencies.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/pbox2d(1).jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/jl1.0.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/jsminim.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/minim.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/minim-spi.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/tritonus_aos.jar"/>
-	<classpathentry kind="lib" path="E:/IMDCA1-Catapult/minim/library/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jay/Desktop/pbox2d(1).jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jay/Desktop/core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jay/Desktop/jbox2d-library-2.1.2.2-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

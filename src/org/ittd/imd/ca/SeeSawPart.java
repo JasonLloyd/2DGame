@@ -1,7 +1,8 @@
 package org.ittd.imd.ca;
+import ord.ittd.imd.ca.update.Entity;
+
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
@@ -14,20 +15,8 @@ import processing.core.PApplet;
  * It has been edited for my purpose
  * 
  */
-public class SeeSawPart 
-{
-
-	  // We need to keep track of a Body and a width and height
-	  Body body;
-	  float w;
-	  float h;
-	
-	  PApplet parent;	// Variable to hold the parent element 
-	  
-	  PBox2D box2d;		// holds the box2d world
-	  
-	  BodyDef bd;
-	  
+public class SeeSawPart extends Entity
+{	  
 	 /**
 	 * @param x: X Position for see-saw part.
 	 * @param y: Y Position for see-saw part.
@@ -37,28 +26,54 @@ public class SeeSawPart
 	 * @param p:The parent element so we can attach it to our PApplet.
 	 * @param b: The box2d element so we can attach it to our physics world.
 	 */
-	public SeeSawPart(float x, float y, float w_, float h_, boolean lock, PApplet p, PBox2D b) 
+	public SeeSawPart(float x, float y, float w, float h, boolean lock,  PBox2D b, PApplet p) 
 	{
-	    w = w_;
-	    h = h_;
-	    parent = p;
-	    box2d = b;
-	    // Define and create the body
-	     bd = new BodyDef();
-	    
-	    if(lock == true){}
-	    else bd.angle = parent.radians(-30);
-	    
-	    bd.position.set(box2d.coordPixelsToWorld(new Vec2(x,y)));
-	    if (lock) bd.type = BodyType.STATIC;
-	    else bd.type = BodyType.DYNAMIC;
+		super(x, y, w, h, lock, b, p);
+		setBodyDef(new BodyDef());
+	    makeBody();
+	     
+	}
 	
-	    body = box2d.createBody(bd);
+	 /**
+	 * This method is used to display the parts of the see-saw(RECT's)
+	 */
+	 @SuppressWarnings("static-access")
+	public void display() 
+	 {
+	    // We look at each body and get its screen position
+	    Vec2 pos = getBox2d().getBodyPixelCoord(getBody());
+	   
+	    float a = getBody().getAngle();			// Get its angle of rotation
+	    
+	    getParent().pushMatrix();
+	    
+	    getParent().rectMode(getParent().CENTER);
+	    
+	    getParent().translate(pos.x,pos.y);
+	    getParent().rotate(-a);
+	    getParent().fill(192,192,192);
+	    getParent().stroke(0);
+	    getParent().rect(0,0,getWidth(),getHeight());
+	    getParent().popMatrix();
+	 }
+
+	@SuppressWarnings("static-access")
+	@Override
+	public void makeBody() 
+	{
+		if(isMove() == true){}
+	    else getBodyDef().angle = getParent().radians(-30);
+	    
+		getBodyDef().position.set(getBox2d().coordPixelsToWorld(new Vec2(getXposition(),getYposition())));
+	    if (isMove()) getBodyDef().type = BodyType.STATIC;
+	    else getBodyDef().type = BodyType.DYNAMIC;
+	
+	    setBody(getBox2d().createBody(getBodyDef()));
 	
 	    // Define the shape -- a (this is what we use for a rectangle)
 	    PolygonShape sd = new PolygonShape();
-	    float box2dW = box2d.scalarPixelsToWorld(w/2);
-	    float box2dH = box2d.scalarPixelsToWorld(h/2);
+	    float box2dW = getBox2d().scalarPixelsToWorld(getWidth()/2);
+	    float box2dH = getBox2d().scalarPixelsToWorld(getHeight()/2);
 	    sd.setAsBox(box2dW, box2dH);
 	
 	    // Define a fixture
@@ -69,40 +84,10 @@ public class SeeSawPart
 	    fd.friction = (float) 0.3;
 	    fd.restitution = (float) 0.5;
 	
-	    body.createFixture(fd);
-	
+	    getBody().createFixture(fd);
 	    // Give it some initial random velocity
 	    //body.setLinearVelocity(new Vec2(parent.random(-5,5),parent.random(2,5)));
-	    body.setAngularVelocity(1);
-	  }
-	
-	 /**
-	 * This function removes the particle from the box2d world
-	 */
-	 void killBody() 
-	 {
-	    box2d.destroyBody(body);
-	 }
-	
-	 /**
-	 * This method is used to display the parts of the see-saw(RECT's)
-	 */
-	 void display() 
-	 {
-	    // We look at each body and get its screen position
-	    Vec2 pos = box2d.getBodyPixelCoord(body);
-	   
-	    float a = body.getAngle();			// Get its angle of rotation
-	    
-	    parent.pushMatrix();
-	    
-	    parent.rectMode(parent.CENTER);
-	    
-	    parent.translate(pos.x,pos.y);
-	    parent.rotate(-a);
-	    parent.fill(192,192,192);
-	    parent.stroke(0);
-	    parent.rect(0,0,w,h);
-	    parent.popMatrix();
-	 }
+	    getBody().setAngularVelocity(1);
+		
+	}
 }

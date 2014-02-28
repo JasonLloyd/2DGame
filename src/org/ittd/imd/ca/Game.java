@@ -2,18 +2,13 @@ package org.ittd.imd.ca;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-
-import javax.swing.Timer;
-
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
-
-import ddf.minim.AudioPlayer;
-import ddf.minim.Minim;
-
+//import ddf.minim.AudioPlayer;
+//import ddf.minim.Minim;
 import pbox2d.PBox2D;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -28,29 +23,20 @@ public class Game extends PApplet
 	
 	private static final long serialVersionUID = 1L;
 
-	enum States			//these are the states of the game
-	{
-		menu,
-		playing,
-		levelEnd,
-		levelSelect,
-		gameOver,
-		win,
-	}
+	enum States{menu,playing,levelEnd,levelSelect,gameOver,win,}
 	
 	/** 
 	 * These variables are related to the sound of the game
 	 * An external library is used can be found here:
 	 * {@link http://code.compartmental.net/tools/minim/ } 
-	 * audio_player: player for menu and levels
-	 * audio_player_menuMove: player for our menu sound
-	 * audio_player_catapult: player for the catapult
+	 * //audio_player: player for menu and levels
+	 * //audio_player_menuMove: player for our menu sound
+	 * //audio_player_catapult: player for the catapult
 	 */
-	private AudioPlayer audio_player;
-	private AudioPlayer audio_player_menuMove;
-	private AudioPlayer audio_player_catapult;
-	private Minim minim;
-	
+	//private AudioPlayer //audio_player;
+	//private AudioPlayer //audio_player_menuMove;
+	//private AudioPlayer //audio_player_catapult;
+	//private Minim minim;
 	
 	
 	/**
@@ -128,18 +114,40 @@ public class Game extends PApplet
 	private boolean muteSound = true;
 	private boolean showHelp = false;
 	
-	boolean gameOverDisplayed = false;
+	//private boolean gameOverDisplayed = false;
 	
-	double textIncrement = 20;
+	private double textIncrement = 20;
 	
-	float theta;
+	private float theta;
 	
-	 Object o1;					//gets the UserData/ID that we set early for the objects 
-	 Object o2;
+	private Object o1;					//gets the UserData/ID that we set early for the objects 
+	private Object o2;
 
-	 long startTime = 0;
-	 long endTime = 0;
+	private long startTime = 0;
+	private long endTime = 0;
 	
+	private final int SCREEN_WIDTH = 640;
+	private final int SCREEN_HEIGHT = 480;
+	//boundaries.add(new Boundary(TOP_BOUNDARYX,TOP_BOUNDARYY,TOP_BOUNDARYWIDTH,TOP_BOUNDARYHEIGHT,TOP_BOUNDARYANGLE,false, box2d, this));
+	 private float TOP_BOUNDARYX = 5;
+	 private  float TOP_BOUNDARYY = 5;
+	 private  float TOP_BOUNDARYWIDTH = SCREEN_WIDTH*2;
+	 private  float TOP_BOUNDARYHEIGHT = 10;
+	 private  float TOP_BOUNDARYANGLE = 0;
+	//boundaries.add(new Boundary(width-5,height/2,10,height,0,false, box2d, this));		//adds right boundary
+	 private  float RIGHT_BOUNDARYX = SCREEN_WIDTH - 5;
+	 private  float RIGHT_BOUNDARYY = SCREEN_HEIGHT/2;
+	 private  float RIGHT_BOUNDARYWIDTH = 10;
+	 private  float RIGHT_BOUNDARYHEIGHT = SCREEN_HEIGHT;
+	 private  float RIGHT_BOUNDARYANGLE = 0;
+	 
+		//boundaries.add(new Boundary(5,height/2,10,height,0,false, box2d, this));			//adds left boundary
+	 private  float LEFT_BOUNDARYX = 5;
+	 private  float LEFT_BOUNDARYY = SCREEN_HEIGHT/2;
+	 private  float LEFT_BOUNDARYWIDTH = 10;
+	 private  float LEFT_BOUNDARYHEIGHT = SCREEN_HEIGHT;
+	 private  float LEFT_BOUNDARYANGLE = 0;
+	 
 	
 	/* (non-Javadoc)
 	 * This is ran first it steps up the screen and the variables
@@ -148,19 +156,19 @@ public class Game extends PApplet
 	 */
 	public void setup()
 	{
-	  size(640,480);
+	  size(SCREEN_WIDTH,SCREEN_HEIGHT);
 	  smooth();
 
-	  minim = new Minim(this);
+	  //minim = new Minim(this);
 	  
 	  currentState = States.menu;
 
-	  //sets the different audio_players to the correct music
-	  audio_player = minim.loadFile("Resources/MenuMusic.mp3",2048);
-	  audio_player_menuMove = minim.loadFile("Resources/menuMoveSound.wav",2048);
-	  audio_player_catapult = minim.loadFile("Resources/Catapult.mp3",2048);
+	  //sets the different //audio_players to the correct music
+	  //audio_player = minim.loadFile("Resources/MenuMusic.mp3",2048);
+	  //audio_player_menuMove = minim.loadFile("Resources/menuMoveSound.wav",2048);
+	  //audio_player_catapult = minim.loadFile("Resources/Catapult.mp3",2048);
 	  
-	  //audio_player.play();						//starts the menu music
+	  ////audio_player.play();						//starts the menu music
 	  
 	  soundIcon = loadImage("Resources/SoundIcon.png");	//loading the soundIcon
 	  
@@ -184,43 +192,39 @@ public class Game extends PApplet
 	 * @param level : this is the level that the player is currently on. MAX 3
 	 * 
 	 */
-	public void loadLevelBoundaries(int level)
-	{
 	
-
-		if(level == 1)
-		{
-			
-			bg = loadImage("Resources/bg.jpg"); 									//background for 1st level
-			
-			player = new Ball(25, 30,12,false, 0f,5f, box2d, this); 	// sets up the player
-			player.body.setUserData("BallDropped"); 						//sets up the players body ID used for collision detection
-				
-			inGameseeSaw = new SeeSaw(220, 440, this, box2d);			//sets up the see-saw
-			inGameseeSaw.Boundary1.body.setUserData("seesaw1");			//sets up the see-saw body ID used for collision detection
-
-			
-			
-			  seeSawBallY = height - 65;
-			  seeSawBallX = 275;
-			  
-	    	seesawBall = new Ball(seeSawBallX,seeSawBallY,8,false,0.0f,4f, box2d, this );	//sets up the ball on the see-saw
-			seesawBall.body.setUserData("seesawball1");									// sets up the see-saw ball body ID used for collision detection
-			  
-			boundaries = new ArrayList<Boundary>();						//sets up the boundaries array
-			
-			boundaries.add(new Boundary(5,platformYPosition,190 ,10,0,false, this, box2d )); 			//add a boundary for the platform
-			
-			endZone = new Ball(width-50,255,20,false, 0f,2f, box2d, this);			//sets up the endZone
-			endZone.body.setUserData("EndZone");										//sets up the endZone body id used for collision detection
-		}
+	public void loadLevelOne()
+	{
+		bg = loadImage("Resources/bg.jpg"); 									//background for 1st level
 		
-		if(level == 2)
-		{
-			  bg = loadImage("Resources/bg2.jpg");									//background for 2nd level
+		player = new Ball(25, 30,12,false, 0f,5f, box2d, this); 	// sets up the player
+		player.getBody().setUserData("BallDropped"); 						//sets up the players body ID used for collision detection
+			
+		inGameseeSaw = new SeeSaw(220, 440, this, box2d);			//sets up the see-saw
+		inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");			//sets up the see-saw body ID used for collision detection
+
+		
+		
+		  seeSawBallY = height - 65;
+		  seeSawBallX = 275;
+		  
+    	seesawBall = new Ball(seeSawBallX,seeSawBallY,8,false,0.0f,4f, box2d, this );	//sets up the ball on the see-saw
+		seesawBall.getBody().setUserData("seesawball1");									// sets up the see-saw ball body ID used for collision detection
+		  
+		boundaries = new ArrayList<Boundary>();						//sets up the boundaries array
+		
+		boundaries.add(new Boundary(5,platformYPosition,190 ,10,0,false, box2d, this )); 			//add a boundary for the platform
+		
+		endZone = new Ball(width-50,255,20,false, 0f,2f, box2d, this);			//sets up the endZone
+		endZone.getBody().setUserData("EndZone");										//sets up the endZone body id used for collision detection
+	}
+	
+	public void loadLevelTwo()
+	{
+		  bg = loadImage("Resources/bg2.jpg");									//background for 2nd level
 			//  ballLocked = false;
 			  player = new Ball(20, 20,12,false, 0f,5f, box2d, this);	// sets up the player
-			  player.body.setUserData("BallDropped");						//sets up the players body ID used for collision detection
+			  player.getBody().setUserData("BallDropped");						//sets up the players body ID used for collision detection
 			  
 			  boundaries = new ArrayList<Boundary>();					//sets up the boundaries array
 			
@@ -228,66 +232,80 @@ public class Game extends PApplet
 			  seeSawBallY = 265;
 			  
 			  platformYPosition = 100;
-			  boundaries.add(new Boundary(20,platformYPosition,60 ,10,0,false, this, box2d )); 		//add the platform up the player
+			  boundaries.add(new Boundary(20,platformYPosition,60 ,10,0,false, box2d, this )); 		//add the platform up the player
 			  
 
-			  boundaries.add(new Boundary(300,height,height + 280 ,10,radians(90),false, this, box2d ));	//add the wall in the middle of the level
+			  boundaries.add(new Boundary(300,height,height + 280 ,10,radians(90),false, box2d, this ));	//add the wall in the middle of the level
 			  
 			  inGameseeSaw = new SeeSaw(150, 295, this, box2d);			//sets up the see-saw
-			  inGameseeSaw.Boundary1.body.setUserData("seesaw1");		//sets up the see-saw body ID used for collision detection
+			  inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");		//sets up the see-saw body ID used for collision detection
 			  
 			  inGameseeSawTwo = new SeeSaw(425, 440, this, box2d);		//sets up the see-sawTwo 2
-			  inGameseeSawTwo.Boundary1.body.setUserData("seesaw2");	//sets up the see-sawTwo body ID used for collision detection
+			  inGameseeSawTwo.Boundary1.getBody().setUserData("seesaw2");	//sets up the see-sawTwo body ID used for collision detection
 			 
 			  seesawBall = new Ball(200,265,8,false,0.0f,4f, box2d, this );			//sets up the ball on the see-saw
-			  seesawBall.body.setUserData("seesawball1");								// sets up the see-saw ball body ID used for collision detection
+			  seesawBall.getBody().setUserData("seesawball1");								// sets up the see-saw ball body ID used for collision detection
 			  seeSawBallTwoX = 485;
 			  seeSawBallTwoY = height - 75;
 			  seesawBallTwo = new Ball(seeSawBallTwoX - 10,seeSawBallTwoY,8,false,0.0f,0.5f, box2d, this ); //sets up the ball on the see-sawTwo
-			  seesawBallTwo.body.setUserData("seesawball2"); 								//sets up the see-saw ball body ID used for collision detection
+			  seesawBallTwo.getBody().setUserData("seesawball2"); 								//sets up the see-saw ball body ID used for collision detection
 			  
 			  endZone = new Ball(width-50,255,20,false, 0f,2f, box2d, this);			//sets up the end zone
-			  endZone.body.setUserData("EndZone");											//sets up the end zone ID used for collision detection
-		}
+			  endZone.getBody().setUserData("EndZone");											//sets up the end zone ID used for collision detection
+	}
+
+	public void loadLevelThree()
+	{
+		  bg = loadImage("Resources/bg3.jpg");									//background for 2nd level
+			
+		  player = new Ball(20, 20,12,false, 0f,5f, box2d, this);		// sets up the player
+		  player.getBody().setUserData("BallDropped");							//sets up the players body ID used for collision detection
+		
+		  boundaries = new ArrayList<Boundary>();						//sets up the boundaries array
+		 
+		  platformYPosition = 60;
+		  boundaries.add(new Boundary(20,platformYPosition,80 ,10,0,false, box2d, this ));					//add the platform up the player 
+		  //boundaries.add(new Boundary(150,100,80 ,10,radians(45),false, this, box2d ));		//add the first boundary in the level rotated (45C)
+		  boundaries.add(new Boundary(350,100,160 ,10,radians(-145),false, box2d, this ));	//add the first boundary in the level rotated (65C)
+		  boundaries.add(new Boundary(155,140,100 ,10,radians(-45),false, box2d, this ));	//add the first boundary in the level rotated (65C)
+			
+		
+		  inGameseeSaw = new SeeSaw(150, 400, this, box2d);			//sets up the see-saw
+		  inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");		//sets up the see-saw body ID used for collision detection
+		 // boundaries.add(new Boundary(150,325,120,10,0,false,this,box2d));
+		  
+		  inGameseeSawTwo = new SeeSaw(345, 440, this, box2d);		//sets up the see-sawTwo 2
+		  inGameseeSawTwo.Boundary1.getBody().setUserData("seesaw2");	//sets up the see-sawTwo body ID used for collision detection
+		  
+		  seeSawBallX = 200;
+		  seeSawBallY = 375;
+		  
+		  seesawBall = new Ball(200,370,8,false,0f,1f, box2d, this );					//sets up the ball on the see-saw
+		  seesawBall.getBody().setUserData("seesawball1"); 										// sets up the see-saw ball body ID used for collision detection
+		  
+		  seeSawBallTwoX = 395;
+		  seeSawBallTwoY = 415;
+		  
+		  seesawBallTwo = new Ball(seeSawBallTwoX,seeSawBallTwoY,8,false,0.8f,0f, box2d, this ); 		//sets up the ball on the see-sawTwo
+		  seesawBallTwo.getBody().setUserData("seesawball2"); 									// sets up the see-saw ball two body ID used for collision detection
+		  
+		  endZone = new Ball(width-50,255,25,false, 0f,2f, box2d, this);				//sets up the end zone
+		  endZone.getBody().setUserData("EndZone"); 												//sets up the end zone ID used for collision detection	  
+	}
+
+	public void loadLevelBoundaries(int level)
+	{
+		
+		
+		if(level == 1)
+			loadLevelOne();
+		
+		if(level == 2)
+			loadLevelTwo();
 		
 		if(level == 3)
-		{
-			  bg = loadImage("Resources/bg3.jpg");									//background for 2nd level
-			
-			  player = new Ball(20, 20,12,false, 0f,5f, box2d, this);		// sets up the player
-			  player.body.setUserData("BallDropped");							//sets up the players body ID used for collision detection
-			
-			  boundaries = new ArrayList<Boundary>();						//sets up the boundaries array
-			 
-			  platformYPosition = 60;
-			  boundaries.add(new Boundary(20,platformYPosition,80 ,10,0,false, this, box2d ));					//add the platform up the player 
-			  //boundaries.add(new Boundary(150,100,80 ,10,radians(45),false, this, box2d ));		//add the first boundary in the level rotated (45C)
-			  boundaries.add(new Boundary(350,100,160 ,10,radians(-145),false, this, box2d ));	//add the first boundary in the level rotated (65C)
-			  boundaries.add(new Boundary(155,140,100 ,10,radians(-45),false, this, box2d ));	//add the first boundary in the level rotated (65C)
-				
-			
-			  inGameseeSaw = new SeeSaw(150, 400, this, box2d);			//sets up the see-saw
-			  inGameseeSaw.Boundary1.body.setUserData("seesaw1");		//sets up the see-saw body ID used for collision detection
-			 // boundaries.add(new Boundary(150,325,120,10,0,false,this,box2d));
-			  
-			  inGameseeSawTwo = new SeeSaw(345, 440, this, box2d);		//sets up the see-sawTwo 2
-			  inGameseeSawTwo.Boundary1.body.setUserData("seesaw2");	//sets up the see-sawTwo body ID used for collision detection
-			  
-			  seeSawBallX = 200;
-			  seeSawBallY = 375;
-			  
-			  seesawBall = new Ball(200,370,8,false,0f,1f, box2d, this );					//sets up the ball on the see-saw
-			  seesawBall.body.setUserData("seesawball1"); 										// sets up the see-saw ball body ID used for collision detection
-			  
-			  seeSawBallTwoX = 395;
-			  seeSawBallTwoY = 415;
-			  
-			  seesawBallTwo = new Ball(seeSawBallTwoX,seeSawBallTwoY,8,false,0.8f,0f, box2d, this ); 		//sets up the ball on the see-sawTwo
-			  seesawBallTwo.body.setUserData("seesawball2"); 									// sets up the see-saw ball two body ID used for collision detection
-			  
-			  endZone = new Ball(width-50,255,25,false, 0f,2f, box2d, this);				//sets up the end zone
-			  endZone.body.setUserData("EndZone"); 												//sets up the end zone ID used for collision detection	  
-		}
+			loadLevelThree();
+		
 		loadBoundaries();	// load the default level boundaries
 	}
 	
@@ -298,15 +316,12 @@ public class Game extends PApplet
 	 */
 	public void loadBoundaries()
 	{
-		boundaries.add(new Boundary(5,5,width*2,10,0,false, this, box2d));					//adds top boundary
-		boundaries.add(new Boundary(width-5,height/2,10,height,0,false, this, box2d));		//adds right boundary
-		boundaries.add(new Boundary(5,height/2,10,height,0,false, this, box2d));			//adds left boundary
-		//boundaries.add(new Boundary(width/4,height-5,width *2,10,0,false, this, box2d));	//adds bottom boundary
+		boundaries.add(new Boundary(TOP_BOUNDARYX,TOP_BOUNDARYY,TOP_BOUNDARYWIDTH,TOP_BOUNDARYHEIGHT,TOP_BOUNDARYANGLE,false, box2d, this));
+		boundaries.add(new Boundary(RIGHT_BOUNDARYX,RIGHT_BOUNDARYY,RIGHT_BOUNDARYWIDTH,RIGHT_BOUNDARYHEIGHT,RIGHT_BOUNDARYANGLE,false, box2d, this));
+		boundaries.add(new Boundary(LEFT_BOUNDARYX,LEFT_BOUNDARYY,LEFT_BOUNDARYWIDTH,LEFT_BOUNDARYHEIGHT,LEFT_BOUNDARYANGLE,false, box2d, this));
 		
-		boundaries.add(new Boundary(width-50,300,100 ,10,0,false, this, box2d));			//adds the end zone line
-		boundaries.add(new Boundary(width-100,255,100 ,10,radians(90),false, this, box2d));	//adds the end zone line rotated
-			
-		//inGameseeSaw.Boundary1.body.setUserData("seesaw1");
+		boundaries.add(new Boundary(width-50,300,100 ,10,0,false, box2d, this));			//adds the end zone line
+		boundaries.add(new Boundary(width-100,255,100 ,10,radians(90),false, box2d, this));	//adds the end zone line rotated
 	}
 	
 	  
@@ -324,11 +339,8 @@ public class Game extends PApplet
 		Body b1 = f1.getBody();							//gets the 1st fixtures body
 		Body b2 = f2.getBody();							//gets the 2nd fixtures body
 		
-		 o1 = b1.getUserData();					//gets the UserData/ID that we set early for the objects 
-		 o2 = b2.getUserData();					// used to identify which object are hitting each other.
-		
-		
-		
+		o1 = b1.getUserData();					//gets the UserData/ID that we set early for the objects 
+		o2 = b2.getUserData();					// used to identify which object are hitting each other.
 		
 		if(currentState == States.playing)				//we only check the collision when were actually playing the game
 		{
@@ -340,9 +352,9 @@ public class Game extends PApplet
 				
 				if(o1 == "seesaw1" && o2 == "BallDropped")		// if the player hits the first see-saw
 				{
-					audio_player_catapult.play();						//we play the catapult sound
+					//audio_player_catapult.play();						//we play the catapult sound
 					//fill(0,0,255);
-					seesawBall.body.setType(BodyType.DYNAMIC);	//change the ball that on the see-saw to dynamic so it can move
+					seesawBall.getBody().setType(BodyType.DYNAMIC);	//change the ball that on the see-saw to dynamic so it can move
 				    score += 100 / numberOfBall + maxScore;		//add to the players score 
 				    startTime = System.currentTimeMillis();
 				    endTime = startTime + 4*1000; 
@@ -352,8 +364,8 @@ public class Game extends PApplet
 				
 				if(o1 == "seesaw2" && o2 == "seesawball1" && currentLevel > 1 || o1 == "seesaw2" && o2 == "BallDropped") //if the ball on see-saw 1 hits see-saw 2(only checked in level 2 & 3)
 				{
-					audio_player_catapult.play();
-					seesawBallTwo.body.setType(BodyType.DYNAMIC);
+					//audio_player_catapult.play();
+					seesawBallTwo.getBody().setType(BodyType.DYNAMIC);
 					score += 200 / numberOfBall + maxScore;
 				}
 					
@@ -376,15 +388,15 @@ public class Game extends PApplet
 				}
 				if(isEndOfLevel() && currentLevel == 3)
 				{
-					    seesawBallTwo.body.setActive(false);
+					    seesawBallTwo.getBody().setActive(false);
 						
 						score += (1000/numberOfBall) + maxScore;
 						System.out.println();
 				}
 				
-				System.out.println(seesawBall.body.getUserData());
-				System.out.println(endZone.body.getUserData());
-				if(o1 == "seesawball1" && o2 == "EndZone" && seesawBallTwo.body.isActive() == false)
+				System.out.println(seesawBall.getBody().getUserData());
+				System.out.println(endZone.getBody().getUserData());
+				if(o1 == "seesawball1" && o2 == "EndZone" && seesawBallTwo.getBody().isActive() == false)
 					currentState = States.win;
 			}
 		}
@@ -454,7 +466,7 @@ public class Game extends PApplet
 					
 				case playing: // if were playing the game
 					
-					player.body.setType(BodyType.DYNAMIC);
+					player.getBody().setType(BodyType.DYNAMIC);
 					if(numberOfBall != 0)
 					{
 						if(maxScore > 100)
@@ -492,19 +504,19 @@ public class Game extends PApplet
 						text("Score " + Math.round(score*100.00)/100,width/3 + 300, 40);	//display the score
 						popMatrix();
 						
-						if(player.done() && !isEndOfLevel())
+						if(player.readyForDeletion() && !isEndOfLevel())
 						{
 			
 							if(System.currentTimeMillis() > endTime)
 							{
 								  numberOfBall--;
 								  player = new Ball(20, 20,12,false, 0f, 5f, box2d, this);
-								  player.body.setUserData("BallDropped");  		 
+								  player.getBody().setUserData("BallDropped");  		 
 								  startTime = 0;
 							}
 					    }
 						
-						if(seesawBall.done())
+						if(seesawBall.readyForDeletion())
 						{
 						
 								  if(currentLevel != 3)
@@ -512,17 +524,17 @@ public class Game extends PApplet
 								  else
 									  seesawBall = new Ball(seeSawBallX,seeSawBallY,8,false,0f,0.8f, box2d, this );
 									  
-								  seesawBall.body.setUserData("seesawball1");
-								  inGameseeSaw.Boundary1.body.setTransform( inGameseeSaw.Boundary1.body.getPosition(), -10);		 
+								  seesawBall.getBody().setUserData("seesawball1");
+								  inGameseeSaw.Boundary1.getBody().setTransform( inGameseeSaw.Boundary1.getBody().getPosition(), -10);		 
 						}
 						
 						if(currentLevel > 1)
 						{
-							if(seesawBallTwo.done())
+							if(seesawBallTwo.readyForDeletion())
 							{
 							  seesawBallTwo = new Ball(seeSawBallTwoX,seeSawBallTwoY,8,false,0.0f,0.5f, box2d, this );
-							  seesawBallTwo.body.setUserData("seesawball2");  
-							  inGameseeSawTwo.Boundary1.body.setTransform( inGameseeSawTwo.Boundary1.body.getPosition(), -10);
+							  seesawBallTwo.getBody().setUserData("seesawball2");  
+							  inGameseeSawTwo.Boundary1.getBody().setTransform( inGameseeSawTwo.Boundary1.getBody().getPosition(), -10);
 							}
 						}
 						
@@ -717,7 +729,7 @@ public class Game extends PApplet
 				{
 					currentState = States.levelSelect; // change state to levelSelect
 					
-					audio_player_menuMove.play();			   // play menu move sound
+					//audio_player_menuMove.play();			   // play menu move sound
 				}
 				if(keyCode == KeyEvent.VK_H)		  //if the player presses H
 					helpStages = 1;						//enter 1st stage of help
@@ -730,7 +742,7 @@ public class Game extends PApplet
 					  {
 						  selX += 207;
 						  currentLevel++;			//change level
-						  audio_player_menuMove.play();	//play sound
+						  //audio_player_menuMove.play();	//play sound
 					  }
 					  else							//move RECT back to start
 					  {
@@ -746,7 +758,7 @@ public class Game extends PApplet
 					  {
 						  selX -= 207;
 						  currentLevel--;
-						  audio_player_menuMove.play();
+						  //audio_player_menuMove.play();
 					  }
 					  else
 					  {
@@ -763,10 +775,10 @@ public class Game extends PApplet
 				
 			case playing:				//if were playing
 				
-				if(keyCode == RIGHT && player.body.getPosition().y >= boundaries.get(0).body.getPosition().y)
-					 player.body.setLinearVelocity(new Vec2(8,0));	//move the player right
-				else if(keyCode == LEFT && player.body.getPosition().y >= boundaries.get(0).body.getPosition().y)
-					 player.body.setLinearVelocity(new Vec2(-10,0));	//move the player left
+				if(keyCode == RIGHT && player.getBody().getPosition().y >= boundaries.get(0).getBody().getPosition().y)
+					 player.getBody().setLinearVelocity(new Vec2(8,0));	//move the player right
+				else if(keyCode == LEFT && player.getBody().getPosition().y >= boundaries.get(0).getBody().getPosition().y)
+					 player.getBody().setLinearVelocity(new Vec2(-10,0));	//move the player left
 				else if(keyCode == KeyEvent.VK_H) 	
 				{
 					if(helpStages < 4)	//only show help once
@@ -781,24 +793,24 @@ public class Game extends PApplet
 				else if(keyCode == UP)
 				{
 					platformYPosition -= 10;
-					float platformWidth = boundaries.get(0).w;
-					float platformXPosition = boundaries.get(0).x;
+					float platformWidth = boundaries.get(0).getWidth();
+					float platformXPosition = boundaries.get(0).getXposition();
 					
-					boundaries.get(0).body.setActive(false);
+					boundaries.get(0).getBody().setActive(false);
 					boundaries.remove(0);
-					boundaries.add(0, new Boundary(platformXPosition,platformYPosition,platformWidth ,10,0,false, this, box2d )); 
+					boundaries.add(0, new Boundary(platformXPosition,platformYPosition,platformWidth ,10,0,false, box2d, this )); 
 					
 				}
 				else if(keyCode == DOWN)
 				{
 					platformYPosition += 10;
 					
-					float platformWidth = boundaries.get(0).w;
-					float platformXPosition = boundaries.get(0).x;
+					float platformWidth = boundaries.get(0).getWidth();
+					float platformXPosition = boundaries.get(0).getXposition();
 			
-					boundaries.get(0).body.setActive(false);
+					boundaries.get(0).getBody().setActive(false);
 					boundaries.remove(0);
-					boundaries.add(0, new Boundary(platformXPosition,platformYPosition,platformWidth ,10,0,false, this, box2d )); 
+					boundaries.add(0, new Boundary(platformXPosition,platformYPosition,platformWidth ,10,0,false, box2d, this )); 
 					
 				}
 				break;
@@ -851,9 +863,9 @@ public class Game extends PApplet
 	 */
 	public void music()
 	{
-		audio_player.play();
-		audio_player_menuMove.play();
-		audio_player_catapult.play();
+		//audio_player.play();
+		//audio_player_menuMove.play();
+		//audio_player_catapult.play();
 	}
 	
 	/**
@@ -861,9 +873,9 @@ public class Game extends PApplet
 	 */
 	public void noMusic()
 	{
-		audio_player.pause();
-		audio_player_menuMove.pause();
-		audio_player_catapult.pause();
+		//audio_player.pause();
+		//audio_player_menuMove.pause();
+		//audio_player_catapult.pause();
 		
 	}
 	

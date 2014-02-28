@@ -24,12 +24,9 @@ public class SeeSaw
   SeeSawPart boundary3;
   SeeSawPart boundary4;
 
-  
   PApplet parent;	// Variable to hold the parent element 
   
   PBox2D box2d;		// holds the box2d world
-  
-
   
   /**
  * @param x: This is the X position of the see-saw. 
@@ -45,16 +42,14 @@ public class SeeSaw
 	box2d = b;
 	
     // Initialize locations of two Boundaries
-    Boundary1 = new SeeSawPart(x, y-20, 120, 10, false,parent,box2d);
-    Boundary2 = new SeeSawPart(x, y, 10, 40, true,parent,box2d);
-    boundary3 = new SeeSawPart(x + 40, y + 20,20,10,true,parent,box2d);
-   // boundary4 = new SeeSawPart(x + 120, y+25,20,10,true,parent,box2d);
-    //Boundary3 = new BoundaryVersion2(x, y+40, 120,40, true,parent,box2d);
+    Boundary1 = new SeeSawPart(x, y-20, 120, 10, false,box2d,parent);
+    Boundary2 = new SeeSawPart(x, y, 10, 40, true,box2d,parent);
+    boundary3 = new SeeSawPart(x + 40, y + 20,20,10,true,box2d,parent);
 
     // Define joint as between two bodies
     RevoluteJointDef rjd = new RevoluteJointDef();
 
-    rjd.initialize(Boundary1.body, Boundary2.body, Boundary1.body.getWorldCenter());
+    rjd.initialize(Boundary1.getBody(), Boundary2.getBody(), Boundary1.getBody().getWorldCenter());
       // Create the joint
     joint = (RevoluteJoint) box2d.world.createJoint(rjd);
   }
@@ -65,10 +60,9 @@ public class SeeSaw
     Boundary2.display();
     Boundary1.display();
     boundary3.display();
-    //boundary4.display();
 
     // Draw anchor just for debug
-    Vec2 anchor = box2d.coordWorldToPixels(Boundary1.body.getWorldCenter());
+    Vec2 anchor = box2d.coordWorldToPixels(Boundary1.getBody().getWorldCenter());
     parent.pushMatrix();
     parent.fill(255, 0, 0);
     parent.stroke(0);
