@@ -90,4 +90,10 @@ public class SeeSawPart extends Entity
 	    getBody().setAngularVelocity(1);
 		
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

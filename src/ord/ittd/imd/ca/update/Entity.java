@@ -1,27 +1,49 @@
 package ord.ittd.imd.ca.update;
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbox2d.common.Vec2;
+import org.ittd.imd.ca.Ball;
+import org.ittd.imd.ca.Boundary;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 
 import pbox2d.PBox2D;
 import processing.core.PApplet;
 
+@XmlJavaTypeAdapter(EntityMethodAdapter.class)
 public abstract class Entity 
 {
+	@XmlElement(name="xposition")
 	private float xposition;
+	@XmlElement(name="yposition")
 	private float yposition;
+	@XmlElement(name="width")
 	private float width;
+	@XmlElement(name="height")
 	private float height;
+	@XmlElement(name="move")
 	private boolean move;
+
+	
+	@XmlTransient
 	private Body body;
+	@XmlTransient
 	private BodyDef bodyDef;
+	@XmlTransient
 	private PBox2D box2d;
+	@XmlTransient
 	private  PApplet parent;
 	
-	//private float box2dWidth;
-	//private float box2dHeight;
 	
+	public Entity(){}
+	public Entity(float x, float y, float w, float h, boolean m)
+	{
+		this.xposition = x;
+		this.yposition = y;
+		this.width = w;
+		this.height = h;
+		this.move = m;
+	}
 
 	public Entity(float x, float y, float w, float h, boolean m, PBox2D b, PApplet child) 
 	{
@@ -32,16 +54,18 @@ public abstract class Entity
 		this.move = m;
 		this.box2d = b;
 		this.parent = child;
+		
 	}
 	
+	public abstract String toString();
+	public abstract void display();
+	public abstract void makeBody();
+
 	public void killBody()
 	{
 		getBox2d().destroyBody(getBody());
 	}
 	
-	public abstract void display();
-	public abstract void makeBody();
-
 	public float getXposition() {
 		return xposition;
 	}
