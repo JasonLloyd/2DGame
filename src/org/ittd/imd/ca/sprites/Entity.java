@@ -1,27 +1,62 @@
-package ord.ittd.imd.ca.update;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+package org.ittd.imd.ca.sprites;
 
-import org.ittd.imd.ca.Ball;
-import org.ittd.imd.ca.Boundary;
+import javax.xml.bind.annotation.*;
+
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 
 import pbox2d.PBox2D;
 import processing.core.PApplet;
 
-@XmlJavaTypeAdapter(EntityMethodAdapter.class)
+
+/**
+ * <p>Java class for BaseEntity complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="BaseEntity">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="xposition" type="{http://www.w3.org/2001/XMLSchema}float"/>
+ *         &lt;element name="yposition" type="{http://www.w3.org/2001/XMLSchema}float"/>
+ *         &lt;element name="width" type="{http://www.w3.org/2001/XMLSchema}float"/>
+ *         &lt;element name="height" type="{http://www.w3.org/2001/XMLSchema}float"/>
+ *         &lt;element name="move" type="{http://www.w3.org/2001/XMLSchema}float"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "BaseEntity", propOrder = {
+    "xposition",
+    "yposition",
+    "width",
+    "height",
+    "move"
+})
+@XmlSeeAlso({
+    SeeSawPart.class,
+    Boundary.class,
+    Ball.class
+})
+
 public abstract class Entity 
 {
-	@XmlElement(name="xposition")
+
 	private float xposition;
-	@XmlElement(name="yposition")
+	
 	private float yposition;
-	@XmlElement(name="width")
+	
 	private float width;
-	@XmlElement(name="height")
+	
 	private float height;
-	@XmlElement(name="move")
+	
 	private boolean move;
 
 	

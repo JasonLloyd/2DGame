@@ -1,5 +1,11 @@
-package org.ittd.imd.ca;
-import ord.ittd.imd.ca.update.Entity;
+package org.ittd.imd.ca.sprites;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyDef;
@@ -15,12 +21,41 @@ import processing.core.PApplet;
  * boundaries for the level and add structures in our level.
  *
  */
+
+/**
+ * <p>Java class for BoundaryT complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="BoundaryT">
+ *   &lt;complexContent>
+ *     &lt;extension base="{}BaseEntity">
+ *       &lt;sequence>
+ *         &lt;element name="angle" type="{http://www.w3.org/2001/XMLSchema}float"/>
+ *       &lt;/sequence>
+ *     &lt;/extension>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Boundary", propOrder = {
+		"angle"
+})
+
 public class Boundary extends Entity
 {
 
 	float angle;
+	@XmlTransient
 	PolygonShape sd;
-	
+	@XmlTransient
+	static List<Boundary> entities = new ArrayList<Boundary>();
+
+	public Boundary(){}
 	public Boundary(float x,float y, float w, float h, float a, boolean move,  PBox2D ref,PApplet p) 
 	{
 		super(x, y, w, h, move, ref, p);
@@ -85,6 +120,28 @@ public class Boundary extends Entity
 	public String toString() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public float getAngle() {
+		return angle;
+	}
+
+	/**
+	 * Sets the value of the angle property.
+	 * 
+	 */
+	public void setAngle(float value) {
+		this.angle = value;
+	}
+
+	public void addBoundaryItem(Boundary item)
+	{
+		Boundary.entities.add(item);
+	}
+
+	public List<Boundary> getBoundaryEntities()
+	{
+		return entities;
 	}
 
 }

@@ -1,5 +1,7 @@
-package org.ittd.imd.ca;
-import ord.ittd.imd.ca.update.Entity;
+package org.ittd.imd.ca.sprites;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -15,6 +17,8 @@ import processing.core.PApplet;
  * It has been edited for my purpose
  * 
  */
+
+
 public class SeeSawPart extends Entity
 {	  
 	 /**
@@ -26,6 +30,8 @@ public class SeeSawPart extends Entity
 	 * @param p:The parent element so we can attach it to our PApplet.
 	 * @param b: The box2d element so we can attach it to our physics world.
 	 */
+	
+	public SeeSawPart(){}
 	public SeeSawPart(float x, float y, float w, float h, boolean lock,  PBox2D b, PApplet p) 
 	{
 		super(x, y, w, h, lock, b, p);

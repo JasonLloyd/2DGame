@@ -1,12 +1,22 @@
-package org.ittd.imd.ca;
+package org.ittd.imd.ca.sprites;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
+
+import org.ittd.imd.main.Main;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
+
+
+
+
+
+
 //import ddf.minim.AudioPlayer;
 //import ddf.minim.Minim;
 import pbox2d.PBox2D;
@@ -127,20 +137,6 @@ public class Game extends PApplet
 	
 	private float DEFAULT_ANGLE = 0;
 
-	private final float TOP_BOUNDARYX = 5;
-	private final float TOP_BOUNDARYY = 5;
-	private final float TOP_BOUNDARYWIDTH = SCREEN_WIDTH*2;
-	private final float TOP_BOUNDARYHEIGHT = 10;
-
-	private final float RIGHT_BOUNDARYX = SCREEN_WIDTH - 5;
-	private final float RIGHT_BOUNDARYY = SCREEN_HEIGHT/2;
-	private final float RIGHT_BOUNDARYWIDTH = 10;
-	private final float RIGHT_BOUNDARYHEIGHT = SCREEN_HEIGHT;
-
-	private final float LEFT_BOUNDARYX = 5;
-	private final float LEFT_BOUNDARYY = SCREEN_HEIGHT/2;
-	private final float LEFT_BOUNDARYWIDTH = 10;
-	private final float LEFT_BOUNDARYHEIGHT = SCREEN_HEIGHT;
 
 	private final float END_BOUNDARYX = SCREEN_WIDTH-50;
 	private final float END_BOUNDARYY = 300;
@@ -164,6 +160,13 @@ public class Game extends PApplet
 	{
 		size(SCREEN_WIDTH,SCREEN_HEIGHT);
 		smooth();
+		
+		try {
+			Main.xmlToJavaObject();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		//minim = new Minim(this);
 
@@ -176,7 +179,7 @@ public class Game extends PApplet
 
 		////audio_player.play();						//starts the menu music
 
-		soundIcon = loadImage("Resources/SoundIcon.png");	//loading the soundIcon
+		soundIcon = loadImage("menuImages/SoundIcon.png");	//loading the soundIcon
 
 
 		box2d = new PBox2D(this);			// Initialize box2d physics and create the world
@@ -187,8 +190,8 @@ public class Game extends PApplet
 
 		box2d.listenForCollisions();		// Tells box2d to listen for collisions
 
-		chooseLevelBg = loadImage("Resources/chooseLevelBG.jpg");	//load the choose level background
-		bg = loadImage("Resources/menuBG.jpg");							//load default BG
+		chooseLevelBg = loadImage("menuImages/chooseLevelBG.jpg");	//load the choose level background
+		bg = loadImage("menuImages/menuBG.jpg");							//load default BG
 
 	}
 
@@ -201,14 +204,23 @@ public class Game extends PApplet
 
 	public void loadLevelOne()
 	{
-		bg = loadImage("Resources/bg.jpg"); 									//background for 1st level
+		bg = loadImage("gameImages/bg.jpg"); 									//background for 1st level
 
-		player = new Ball(25, 30,12,false, 0f,5f, box2d, this); 	// sets up the player
+		player = new Ball(Ball.entities.get(0).getXposition(),
+				Ball.entities.get(0).getYposition(),
+				Ball.entities.get(0).getRadius(),
+				Ball.entities.get(0).isMove(),
+				Ball.entities.get(0).getRestitution(),
+				Ball.entities.get(0).getDensity(),
+				box2d,this); 	// sets up the player
+		
 		player.getBody().setUserData("BallDropped"); 						//sets up the players body ID used for collision detection
 
-		inGameseeSaw = new SeeSaw(220, 440, this, box2d);			//sets up the see-saw
+		inGameseeSaw = new SeeSaw(SeeSaw.entities.get(0).getXposition()
+				, SeeSaw.entities.get(0).getYposition(), this, box2d);			//sets up the see-saw
+		
+		System.out.println(inGameseeSaw.getXposition());
 		inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");			//sets up the see-saw body ID used for collision detection
-
 
 
 		seeSawBallY = height - 65;
@@ -322,10 +334,13 @@ public class Game extends PApplet
 	 */
 	public void loadBoundaries()
 	{
-		boundaries.add(new Boundary(TOP_BOUNDARYX,TOP_BOUNDARYY,TOP_BOUNDARYWIDTH,TOP_BOUNDARYHEIGHT,DEFAULT_ANGLE,false, box2d, this));
-		boundaries.add(new Boundary(RIGHT_BOUNDARYX,RIGHT_BOUNDARYY,RIGHT_BOUNDARYWIDTH,RIGHT_BOUNDARYHEIGHT,DEFAULT_ANGLE,false, box2d, this));
-		boundaries.add(new Boundary(LEFT_BOUNDARYX,LEFT_BOUNDARYY,LEFT_BOUNDARYWIDTH,LEFT_BOUNDARYHEIGHT,DEFAULT_ANGLE,false, box2d, this));
-
+		
+		for(Boundary b : Boundary.entities)
+		{
+			boundaries.add(new Boundary(b.getXposition(),
+					b.getYposition(),b.getWidth(),
+					b.getHeight(),b.getAngle(),false, box2d, this));
+		}
 		boundaries.add(new Boundary(END_BOUNDARYX,END_BOUNDARYY,END_BOUNDARYWIDTH,END_BOUNDARYHEIGHT,DEFAULT_ANGLE,false, box2d, this));	
 		boundaries.add(new Boundary(ENDL_BOUNDARYX,ENDL_BOUNDARYY,ENDL_BOUNDARYWIDTH ,ENDL_BOUNDARYHEIGHT,ENDL_BOUNDARYANGLE,false, box2d, this));	//adds the end zone line rotated
 	}
@@ -460,7 +475,7 @@ public class Game extends PApplet
 			rect(selX,165,193,145);		//displays a green rect around level
 
 			fill(0,0,0);
-			image(loadImage("Resources/levelSelectLogo.png"), 20, 70);
+			image(loadImage("menuImages/levelSelectLogo.png"), 20, 70);
 			textSize(24);
 			text("Use right and left arrows to choose a level:"+ currentLevel, width/2 - 250,height - 100);
 			popMatrix();
@@ -885,7 +900,7 @@ public class Game extends PApplet
 
 	public static void main(String[] args)
 	{
-		PApplet.main(new String[] { "org.ittd.imd.ca.Game"});
+		PApplet.main(new String[] {"org.ittd.imd.ca.sprites.Game"});
 	}
 }  
 
