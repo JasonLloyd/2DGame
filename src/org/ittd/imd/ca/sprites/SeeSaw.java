@@ -67,7 +67,7 @@ public class SeeSaw extends Entity
   PBox2D box2d;		// holds the box2d world
   
   @XmlTransient
-	static List<SeeSaw> entities = new ArrayList<SeeSaw>();
+	public static List<SeeSaw> entities = new ArrayList<SeeSaw>();
   
   /**
  * @param x: This is the X position of the see-saw. 

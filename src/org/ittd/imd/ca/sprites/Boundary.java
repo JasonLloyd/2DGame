@@ -53,7 +53,7 @@ public class Boundary extends Entity
 	@XmlTransient
 	PolygonShape sd;
 	@XmlTransient
-	static List<Boundary> entities = new ArrayList<Boundary>();
+	public static List<Boundary> entities = new ArrayList<Boundary>();
 
 	public Boundary(){}
 	public Boundary(float x,float y, float w, float h, float a, boolean move,  PBox2D ref,PApplet p) 

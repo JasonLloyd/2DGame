@@ -5,12 +5,14 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.ittd.imd.main.Main;
+import org.ittd.imd.main.LevelLoader;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
+
+
 
 
 
@@ -46,8 +48,6 @@ public class Game extends PApplet
 	//private AudioPlayer //audio_player_menuMove;
 	//private AudioPlayer //audio_player_catapult;
 	//private Minim minim;
-
-
 	/**
 	 * These variables are related to the ball shapes within our game
 	 * player: Player that user of game can control
@@ -97,7 +97,7 @@ public class Game extends PApplet
 	 */
 	private int selX = 15;
 	private int currentLevel = 1;
-	private int numberOfBall = 3;
+	private int numberOfBall = 10;
 	private int helpStages = 1;
 
 
@@ -134,22 +134,6 @@ public class Game extends PApplet
 
 	private final int SCREEN_WIDTH = 640;
 	private final int SCREEN_HEIGHT = 480;
-	
-	private float DEFAULT_ANGLE = 0;
-
-
-	private final float END_BOUNDARYX = SCREEN_WIDTH-50;
-	private final float END_BOUNDARYY = 300;
-	private final float END_BOUNDARYWIDTH = 100;
-	private final float END_BOUNDARYHEIGHT = 10;
-	
-	private final float ENDL_BOUNDARYX = SCREEN_WIDTH-100;
-	private final float ENDL_BOUNDARYY = 255;
-	private final float ENDL_BOUNDARYWIDTH = 100;
-	private final float ENDL_BOUNDARYHEIGHT = 10;
-	private final float ENDL_BOUNDARYANGLE = radians(90);
-
-
 
 	/* (non-Javadoc)
 	 * This is ran first it steps up the screen and the variables
@@ -160,13 +144,6 @@ public class Game extends PApplet
 	{
 		size(SCREEN_WIDTH,SCREEN_HEIGHT);
 		smooth();
-		
-		try {
-			Main.xmlToJavaObject();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		//minim = new Minim(this);
 
@@ -177,7 +154,7 @@ public class Game extends PApplet
 		//audio_player_menuMove = minim.loadFile("Resources/menuMoveSound.wav",2048);
 		//audio_player_catapult = minim.loadFile("Resources/Catapult.mp3",2048);
 
-		////audio_player.play();						//starts the menu music
+		//audio_player.play();						//starts the menu music
 
 		soundIcon = loadImage("menuImages/SoundIcon.png");	//loading the soundIcon
 
@@ -186,7 +163,6 @@ public class Game extends PApplet
 		box2d.createWorld();				// Creating our world
 
 		box2d.setGravity(0, -100f);		// We are setting a custom gravity
-
 
 		box2d.listenForCollisions();		// Tells box2d to listen for collisions
 
@@ -202,10 +178,9 @@ public class Game extends PApplet
 	 * 
 	 */
 
-	public void loadLevelOne()
+	public void loadBasicLevelObjects()
 	{
-		bg = loadImage("gameImages/bg.jpg"); 									//background for 1st level
-
+		bg = loadImage("gameImages/bg"+currentLevel+".jpg"); 									//background for 1st level
 		player = new Ball(Ball.entities.get(0).getXposition(),
 				Ball.entities.get(0).getYposition(),
 				Ball.entities.get(0).getRadius(),
@@ -213,116 +188,92 @@ public class Game extends PApplet
 				Ball.entities.get(0).getRestitution(),
 				Ball.entities.get(0).getDensity(),
 				box2d,this); 	// sets up the player
-		
+
 		player.getBody().setUserData("BallDropped"); 						//sets up the players body ID used for collision detection
 
 		inGameseeSaw = new SeeSaw(SeeSaw.entities.get(0).getXposition()
 				, SeeSaw.entities.get(0).getYposition(), this, box2d);			//sets up the see-saw
-		
-		System.out.println(inGameseeSaw.getXposition());
+
 		inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");			//sets up the see-saw body ID used for collision detection
 
-
-		seeSawBallY = height - 65;
-		seeSawBallX = 275;
-
-		seesawBall = new Ball(seeSawBallX,seeSawBallY,8,false,0.0f,4f, box2d, this );	//sets up the ball on the see-saw
+		seeSawBallX = Ball.entities.get(1).getXposition();
+		seeSawBallY = Ball.entities.get(1).getYposition();
+		seesawBall = new Ball(Ball.entities.get(1).getXposition(),
+				Ball.entities.get(1).getYposition(),
+				Ball.entities.get(1).getRadius(),
+				Ball.entities.get(1).isMove(),
+				Ball.entities.get(1).getRestitution(),
+				Ball.entities.get(1).getDensity(),
+				box2d,this);
 		seesawBall.getBody().setUserData("seesawball1");									// sets up the see-saw ball body ID used for collision detection
 
 		boundaries = new ArrayList<Boundary>();						//sets up the boundaries array
 
+		//Leaving as is (position will never change and we wont need to change it from XML)
 		boundaries.add(new Boundary(5,platformYPosition,190 ,10,0,false, box2d, this )); 			//add a boundary for the platform
 
-		endZone = new Ball(width-50,255,20,false, 0f,2f, box2d, this);			//sets up the endZone
+		endZone = new Ball(Ball.entities.get(2).getXposition(),
+				Ball.entities.get(2).getYposition(),
+				Ball.entities.get(2).getRadius(),
+				Ball.entities.get(2).isMove(),
+				Ball.entities.get(2).getRestitution(),
+				Ball.entities.get(2).getDensity(),
+				box2d,this);
 		endZone.getBody().setUserData("EndZone");										//sets up the endZone body id used for collision detection
+
+		//so what level are we? we need to load others objects if level is not 1
+		if(currentLevel > 1)
+			loadAdvancedLevelObjects();
+
+		//if(currentLevel == 3)
+		//loadLevelThree();
 	}
 
-	public void loadLevelTwo()
+	public void loadAdvancedLevelObjects()
 	{
-		bg = loadImage("Resources/bg2.jpg");									//background for 2nd level
-		//  ballLocked = false;
-		player = new Ball(20, 20,12,false, 0f,5f, box2d, this);	// sets up the player
-		player.getBody().setUserData("BallDropped");						//sets up the players body ID used for collision detection
-
-		boundaries = new ArrayList<Boundary>();					//sets up the boundaries array
-
-		seeSawBallX = 200;
-		seeSawBallY = 265;
-
 		platformYPosition = 100;
-		boundaries.add(new Boundary(20,platformYPosition,60 ,10,0,false, box2d, this )); 		//add the platform up the player
+		boundaries.get(0).setWidth(100); 
 
-
-		boundaries.add(new Boundary(300,height,height + 280 ,10,radians(90),false, box2d, this ));	//add the wall in the middle of the level
-
-		inGameseeSaw = new SeeSaw(150, 295, this, box2d);			//sets up the see-saw
-		inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");		//sets up the see-saw body ID used for collision detection
-
-		inGameseeSawTwo = new SeeSaw(425, 440, this, box2d);		//sets up the see-sawTwo 2
+		inGameseeSawTwo = new SeeSaw(SeeSaw.entities.get(1).getXposition()
+				, SeeSaw.entities.get(1).getYposition(), this, box2d);
 		inGameseeSawTwo.Boundary1.getBody().setUserData("seesaw2");	//sets up the see-sawTwo body ID used for collision detection
 
-		seesawBall = new Ball(200,265,8,false,0.0f,4f, box2d, this );			//sets up the ball on the see-saw
-		seesawBall.getBody().setUserData("seesawball1");								// sets up the see-saw ball body ID used for collision detection
-		seeSawBallTwoX = 485;
-		seeSawBallTwoY = height - 75;
-		seesawBallTwo = new Ball(seeSawBallTwoX - 10,seeSawBallTwoY,8,false,0.0f,0.5f, box2d, this ); //sets up the ball on the see-sawTwo
+		seeSawBallTwoX = Ball.entities.get(3).getXposition();
+		seeSawBallTwoY = Ball.entities.get(3).getYposition();
+
+		seesawBallTwo = new Ball(Ball.entities.get(3).getXposition(),
+				Ball.entities.get(3).getYposition(),
+				Ball.entities.get(3).getRadius(),
+				Ball.entities.get(3).isMove(),
+				Ball.entities.get(3).getRestitution(),
+				Ball.entities.get(3).getDensity(),
+				box2d,this);
+
 		seesawBallTwo.getBody().setUserData("seesawball2"); 								//sets up the see-saw ball body ID used for collision detection
 
-		endZone = new Ball(width-50,255,20,false, 0f,2f, box2d, this);			//sets up the end zone
+
+		endZone  = new Ball(Ball.entities.get(2).getXposition(),
+				Ball.entities.get(2).getYposition(),
+				Ball.entities.get(2).getRadius(),
+				Ball.entities.get(2).isMove(),
+				Ball.entities.get(2).getRestitution(),
+				Ball.entities.get(2).getDensity(),
+				box2d,this); //new Ball(width-50,255,20,false, 0f,2f, box2d, this);			//sets up the end zone
+
 		endZone.getBody().setUserData("EndZone");											//sets up the end zone ID used for collision detection
-	}
 
-	public void loadLevelThree()
-	{
-		bg = loadImage("Resources/bg3.jpg");									//background for 2nd level
-
-		player = new Ball(20, 20,12,false, 0f,5f, box2d, this);		// sets up the player
-		player.getBody().setUserData("BallDropped");							//sets up the players body ID used for collision detection
-
-		boundaries = new ArrayList<Boundary>();						//sets up the boundaries array
-
-		platformYPosition = 60;
-		boundaries.add(new Boundary(20,platformYPosition,80 ,10,0,false, box2d, this ));					//add the platform up the player 
-		//boundaries.add(new Boundary(150,100,80 ,10,radians(45),false, this, box2d ));		//add the first boundary in the level rotated (45C)
-		boundaries.add(new Boundary(350,100,160 ,10,radians(-145),false, box2d, this ));	//add the first boundary in the level rotated (65C)
-		boundaries.add(new Boundary(155,140,100 ,10,radians(-45),false, box2d, this ));	//add the first boundary in the level rotated (65C)
-
-
-		inGameseeSaw = new SeeSaw(150, 400, this, box2d);			//sets up the see-saw
-		inGameseeSaw.Boundary1.getBody().setUserData("seesaw1");		//sets up the see-saw body ID used for collision detection
-		// boundaries.add(new Boundary(150,325,120,10,0,false,this,box2d));
-
-		inGameseeSawTwo = new SeeSaw(345, 440, this, box2d);		//sets up the see-sawTwo 2
-		inGameseeSawTwo.Boundary1.getBody().setUserData("seesaw2");	//sets up the see-sawTwo body ID used for collision detection
-
-		seeSawBallX = 200;
-		seeSawBallY = 375;
-
-		seesawBall = new Ball(200,370,8,false,0f,1f, box2d, this );					//sets up the ball on the see-saw
-		seesawBall.getBody().setUserData("seesawball1"); 										// sets up the see-saw ball body ID used for collision detection
-
-		seeSawBallTwoX = 395;
-		seeSawBallTwoY = 415;
-
-		seesawBallTwo = new Ball(seeSawBallTwoX,seeSawBallTwoY,8,false,0.8f,0f, box2d, this ); 		//sets up the ball on the see-sawTwo
-		seesawBallTwo.getBody().setUserData("seesawball2"); 									// sets up the see-saw ball two body ID used for collision detection
-
-		endZone = new Ball(width-50,255,25,false, 0f,2f, box2d, this);				//sets up the end zone
-		endZone.getBody().setUserData("EndZone"); 												//sets up the end zone ID used for collision detection	  
 	}
 
 	public void loadLevelBoundaries(int level)
 	{
+		try {
+			LevelLoader.loadLevelFromXML(level);
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-
-		if(level == 1)
-			loadLevelOne();
-
-		if(level == 2)
-			loadLevelTwo();
-
-		if(level == 3)
-			loadLevelThree();
+		loadBasicLevelObjects();
 
 		loadBoundaries();	// load the default level boundaries
 	}
@@ -334,15 +285,12 @@ public class Game extends PApplet
 	 */
 	public void loadBoundaries()
 	{
-		
 		for(Boundary b : Boundary.entities)
 		{
 			boundaries.add(new Boundary(b.getXposition(),
 					b.getYposition(),b.getWidth(),
-					b.getHeight(),b.getAngle(),false, box2d, this));
+					b.getHeight(),radians(b.getAngle()),false, box2d, this));
 		}
-		boundaries.add(new Boundary(END_BOUNDARYX,END_BOUNDARYY,END_BOUNDARYWIDTH,END_BOUNDARYHEIGHT,DEFAULT_ANGLE,false, box2d, this));	
-		boundaries.add(new Boundary(ENDL_BOUNDARYX,ENDL_BOUNDARYY,ENDL_BOUNDARYWIDTH ,ENDL_BOUNDARYHEIGHT,ENDL_BOUNDARYANGLE,false, box2d, this));	//adds the end zone line rotated
 	}
 
 
@@ -376,7 +324,7 @@ public class Game extends PApplet
 					score += 100 / numberOfBall + maxScore;		//add to the players score 
 					startTime = System.currentTimeMillis();
 					endTime = startTime + 4*1000; 
-					System.out.println(endTime);
+					//System.out.println(endTime);
 
 				}
 
@@ -391,7 +339,7 @@ public class Game extends PApplet
 
 			if(b1.getType() == BodyType.DYNAMIC && b2.getType() == BodyType.STATIC)
 			{
-				System.out.println(o1 + ":" + o2);
+				System.out.println("OB1" + o1 + ":" + "OB2" + o2);
 				if(isEndOfLevel() && currentLevel == 1)
 				{
 					currentState = States.levelEnd;
@@ -409,13 +357,8 @@ public class Game extends PApplet
 					seesawBallTwo.getBody().setActive(false);
 
 					score += (1000/numberOfBall) + maxScore;
-					System.out.println();
+					//System.out.println();
 				}
-
-				System.out.println(seesawBall.getBody().getUserData());
-				System.out.println(endZone.getBody().getUserData());
-				if(o1 == "seesawball1" && o2 == "EndZone" && seesawBallTwo.getBody().isActive() == false)
-					currentState = States.win;
 			}
 		}
 
@@ -677,7 +620,7 @@ public class Game extends PApplet
 			currentLevel = 1;
 
 
-
+			System.out.println(Ball.entities.size());
 			break;
 
 		case win:
@@ -851,7 +794,7 @@ public class Game extends PApplet
 				//rectMode(CENTER);
 				currentLevel = 1;
 				currentState = States.menu;
-				bg = loadImage("Resources/menuBG.jpg");
+				bg = loadImage("menuImages/menuBG.jpg");
 				selX = 15;
 			}
 
