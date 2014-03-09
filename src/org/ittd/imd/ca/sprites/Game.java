@@ -266,12 +266,7 @@ public class Game extends PApplet
 
 	public void loadLevelBoundaries(int level)
 	{
-		try {
-			LevelLoader.loadLevelFromXML(level);
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		try {LevelLoader.loadLevelFromXML(level);} catch (JAXBException e) {e.printStackTrace();}
 
 		loadBasicLevelObjects();
 

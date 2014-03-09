@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="level" type="LevelT" />
+  <xs:complexType name="LevelT">
+    <xs:sequence>
+	  <xs:element name="entities" type="EntitiesListT" />
+    </xs:sequence>
+  </xs:complexType>
+
+    <xs:complexType name="EntitiesListT">
+    <xs:sequence>
+		<xs:element name="ball" type="BallT" maxOccurs="unbounded" />
+		<xs:element name="boundary" type="BoundaryT" maxOccurs="unbounded" />
+		<xs:element name="seeSaw" type="SeeSawPartT" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="BaseEntity" abstract="true">
+    	<xs:sequence>
+    		<xs:element name="xposition" type="xs:float" />
+			<xs:element name="yposition" type="xs:float" />
+			<xs:element name="width" type="xs:float" />
+			<xs:element name="height" type="xs:float" />
+			<xs:element name="move" type="xs:float" />
+    	</xs:sequence>
+    </xs:complexType>
+	
+  <xs:complexType name="BallT">
+	  <xs:complexContent>
+			<xs:extension base="BaseEntity">
+				<xs:sequence>
+				  <xs:element name="radius" type="xs:float" />
+				  <xs:element name="restitution" type="xs:float" />
+				  <xs:element name="density" type="xs:float" />
+				</xs:sequence>
+			 </xs:extension>
+		</xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="BoundaryT">
+	<xs:complexContent>
+		<xs:extension base="BaseEntity">
+			<xs:sequence>
+				<xs:element name="angle" type="xs:float" />
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="SeeSawPartT">
+	<xs:complexContent>
+		<xs:extension base="BaseEntity">
+		<xs:sequence>
+		  <xs:element name="x" type="xs:float" />
+		  <xs:element name="y" type="xs:float" />
+		</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+  </xs:complexType>
+</xs:schema>
